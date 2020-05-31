@@ -1,15 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '@/pages/login/index'
-import Dashboard from '@/pages/Dashboard'
-import ToSearch from '@/pages/mainBody/search/toSearch/index'
-import Home from '@/pages/mainBody/home/index'
-import Search from '@/pages/mainBody/search/index'
-import Warn from '@/pages/mainBody/warn/index'
-import WarnList from '@/pages/mainBody/warn/warnList/index'
-import Device from '@/pages/mainBody/search/device/index'
-import DeviceList from '@/pages/mainBody/home/deviceList/index'
-import DeviceDetail from '@/pages/mainBody/home/deviceDetail/index'
 Vue.use(Router)
 
 export default new Router({
@@ -17,53 +7,53 @@ export default new Router({
     {
       path: '/',
       name: 'Login',
-      component: Login
+      component: () => import('@/views/login')
     },
     {
-      path: '/dashboard',
-      name: 'Dashboard',
-      component: Dashboard,
-      redirect: '/home',
+      path: '/linker',
+      name: 'Linker',
+      component: () => import('@/layout/index'),
+      redirect: {name: 'Home'},
       children: [
         {
           path: '/home',
           name: 'Home',
-          component: Home
+          component: () => import('@/views/home')
         },
         {
           path: '/search',
           name: 'Search',
-          component: Search
+          component: () => import('@/views/search')
         },
         {
           path: '/toSearch',
           name: 'ToSearch',
-          component: ToSearch
-        },
-        {
-          path: '/deviceList',
-          name: 'DeviceList',
-          component: DeviceList
+          component: () => import('@/views/search/toSearch')
         },
         {
           path: '/deviceDetail',
           name: 'DeviceDetail',
-          component: DeviceDetail
+          component: () => import('@/views/device/detail')
         },
         {
           path: '/device',
           name: 'Device',
-          component: Device
+          component: () => import('@/views/device')
+        },
+        {
+          path: '/chooseDevice',
+          name: 'ChooseDevice',
+          component: () => import('@/views/device/list')
         },
         {
           path: '/warn',
           name: 'Warn',
-          component: Warn
+          component: () => import('@/views/warn')
         },
         {
           path: '/warnList',
           name: 'WarnList',
-          component: WarnList
+          component: () => import('@/views/warn/list')
         }
       ]
     }

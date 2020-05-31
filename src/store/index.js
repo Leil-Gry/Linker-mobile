@@ -1,18 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import cart from './modules/cart'
-import products from './modules/products'
-// import createLogger from '../../../src/plugins/logger'
+import getters from './getters'
 
 Vue.use(Vuex)
 
-// const debug = process.env.NODE_ENV !== 'production'
+const modulesFiles = require.context('./modules', true, /\.js$/)
 
-export default new Vuex.Store({
-  modules: {
-    cart,
-    products
-  }
-  // strict: debug
-  // plugins: debug ? [createLogger()] : []
+const modules = modulesFiles.keys().reduce((modules, modulePath) => {
+  // set './app.js' => 'app'
+  const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
+  const value = modulesFiles(modulePath)
+  modules[moduleName] = value.default
+  return modules
+}, {})
+
+const store = new Vuex.Store({
+  modules,
+  getters
 })
+
+export default store // 导出store
