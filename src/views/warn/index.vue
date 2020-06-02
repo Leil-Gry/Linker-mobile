@@ -26,23 +26,10 @@ export default {
     [Col.name]: Col,
     [Tag.name]: Tag
   },
-  data () {
-    return {
-    }
-  },
   computed: {
     ...mapGetters([
       'warnNum'
     ])
-  },
-  mounted () {
-    this.getWarnNum()
-    setInterval(this.getWarnNum, 30000)
-  },
-  methods: {
-    getWarnNum () {
-      this.$store.dispatch('warn/getWarnNum')
-    }
   }
 }
 </script>

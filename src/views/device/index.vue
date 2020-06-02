@@ -5,7 +5,6 @@
       left-text="返回"
       left-arrow
       @click-left="onClickLeft"
-      @click-right="onClickRight"
     />
     <van-list
       v-model="loading"
@@ -31,9 +30,9 @@
 
 <script>
 import { NavBar, List, Cell, Tag } from 'vant'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
-  name: 'DeviceListBody',
+  name: 'Device',
   components: {
     [NavBar.name]: NavBar,
     [List.name]: List,
@@ -45,61 +44,38 @@ export default {
       list: [],
       loading: false,
       finished: false,
-      status: '',
-      aaa: ''
+      status: ''
     }
   },
   computed: {
     ...mapGetters([
+      'deviceStatus',
       'deviceList'
     ])
   },
-  mounted () {
-    let url = window.location.hash
-    let query = url.split('=')[1]
-    if (query === 'on') {
-      this.status = 1
-    } else if (query === 'off') {
-      this.status = 2
-    }
-  },
   methods: {
+    ...mapActions({
+      getDeviceList: 'device/getDeviceList'
+    }),
     onClickLeft () {
-      window.history.go(-1)
-    },
-    onClickRight () {
+      this.$router.go(-1)
     },
     onLoad () {
       // 异步更新数据
       setTimeout(() => {
-        this.$store.dispatch('device/getDeviceList').then(() => {
+        this.getDeviceList().then(() => {
           console.log(this.deviceList)
           let data = this.deviceList
-          if (!this.status) {
+          if (!this.deviceStatus) {
             this.list = data
           } else {
             data.forEach(item => {
-              if (item.status === this.status) {
+              if (item.status === this.deviceStatus) {
                 this.list.push(item)
               }
             })
           }
         })
-        // this.$http.get('/product/5c39ee9611b780012c8c30aa/device?customerId=5c9c9907267cd71fff956329')
-        //   .then((result) => {
-        //     let data = result.data
-        //     if (!this.status) {
-        //       this.list = data
-        //     } else {
-        //       data.forEach(item => {
-        //         if (item.status === this.status) {
-        //           this.list.push(item)
-        //         }
-        //       })
-        //     }
-        //   }).catch((err) => {
-        //     console.log(err)
-        //   })
         // 加载状态结束
         this.loading = false
 
@@ -107,9 +83,9 @@ export default {
         this.finished = true
       }, 500)
     },
-    goDetail (data) {
-      sessionStorage.setItem('chooseDeviceInfo', JSON.stringify(data))
-      this.$router.replace({path: '/deviceDetail', query: {status: window.location.hash.split('=')[1]}})
+    goDetail (device) {
+      this.$store.commit('device/SET_CURRENT_DEVICE', device)
+      this.$router.push({name: 'DeviceInfo'})
     },
     getStatus (status) {
       switch (status) {

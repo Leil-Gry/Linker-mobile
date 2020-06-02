@@ -1,4 +1,4 @@
-import { getWarnNum, getWarnList } from '@/api/warn'
+import Warn from '@/api/warn'
 
 const state = {
   warnNum: null,
@@ -15,23 +15,24 @@ const mutations = {
 }
 
 const actions = {
-  getWarnNum ({ commit }) {
+  getWarnNum ({ rootGetters, commit }) {
     return new Promise((resolve, reject) => {
-      getWarnNum().then(response => {
-        commit('SET_WARN_NUM', response.total)
+      Warn.getWarnNum(rootGetters.productId, rootGetters.customerRoleId).then(res => {
+        console.log(res)
+        commit('SET_WARN_NUM', res.total)
         resolve()
-      }).catch(error => {
-        reject(error)
+      }).catch(err => {
+        reject(err)
       })
     })
   },
-  getWarnList ({ commit }) {
+  getWarnList ({ rootGetters, commit }) {
     return new Promise((resolve, reject) => {
-      getWarnList().then(response => {
-        commit('SET_WARN_LIST', response) // TODO
+      Warn.getWarnList(rootGetters.productId, rootGetters.customerRoleId).then(res => {
+        commit('SET_WARN_LIST', res) // TODO
         resolve()
-      }).catch(error => {
-        reject(error)
+      }).catch(err => {
+        reject(err)
       })
     })
   }

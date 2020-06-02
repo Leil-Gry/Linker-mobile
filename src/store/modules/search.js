@@ -1,4 +1,4 @@
-import { getTags, getTagValues, getVariable, search } from '@/api/search'
+import Search from '@/api/search'
 
 const state = {
   tags: [],
@@ -36,9 +36,9 @@ const mutations = {
 }
 
 const actions = {
-  getTags ({ commit }) {
+  getTags ({ rootGetters, commit }) {
     return new Promise((resolve, reject) => {
-      getTags().then(response => {
+      Search.getTags(rootGetters.productId).then(response => {
         commit('SET_TAGS', response)
         resolve()
       }).catch(error => {
@@ -46,9 +46,9 @@ const actions = {
       })
     })
   },
-  getTagValues ({ commit }, query) {
+  getTagValues ({ rootGetters, commit }, query) {
     return new Promise((resolve, reject) => {
-      getTagValues(query).then(response => {
+      Search.getTagValues(rootGetters.productId, query).then(response => {
         commit('SET_TAG_VALUES', response)
         resolve()
       }).catch(error => {
@@ -56,9 +56,9 @@ const actions = {
       })
     })
   },
-  getVariable ({ commit }) {
+  getVariable ({ rootGetters, commit }) {
     return new Promise((resolve, reject) => {
-      getVariable().then(response => {
+      Search.getVariable(rootGetters.productId).then(response => {
         commit('SET_SPECIFICATION', response.specification)
         resolve()
       }).catch(error => {
@@ -66,9 +66,9 @@ const actions = {
       })
     })
   },
-  search ({ commit }, query) {
+  search ({ rootGetters, commit }, query) {
     return new Promise((resolve, reject) => {
-      search(query).then(response => {
+      Search.search(rootGetters.productId, rootGetters.customerRoleId, query).then(response => {
         commit('SET_SEARCH_RESULT', response)
         resolve()
       }).catch(error => {

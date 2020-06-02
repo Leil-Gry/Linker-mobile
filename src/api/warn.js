@@ -1,15 +1,17 @@
 import request from '@/utils/request'
 
-export function getWarnNum () {
-  return request({
-    method: 'get',
-    url: '/incident/stats?productId=5c39ee9611b780012c8c30aa&customerId=5c9c9907267cd71fff956329'
-  })
-}
+export default{
+  getWarnNum (pid, cid) {
+    return request({
+      method: 'get',
+      url: '/incident/stats?productId=' + pid + '&customerId=' + cid
+    })
+  },
 
-export function getWarnList () {
-  return request({
-    method: 'get',
-    url: '/incident?status=1&product=5c39ee9611b780012c8c30aa&customerId=5c9c9907267cd71fff956329'
-  })
+  getWarnList (pid, cid, status = 1) {
+    return request({
+      method: 'get',
+      url: '/incident?status=' + status + '&product=' + pid + '&customerId=' + cid
+    })
+  }
 }

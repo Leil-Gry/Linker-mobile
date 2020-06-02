@@ -2,7 +2,7 @@
   <div>
     <van-cell
       class="firstCell"
-      @click="showPopup">
+      @click="showPopup = true">
       <van-icon
         class="firstCellIcon"
         slot="right-icon"
@@ -11,12 +11,12 @@
       />
     </van-cell>
     <van-popup
-      v-model="show"
+      v-model="showPopup"
       position="right"
       :style="{ height: '100%',width: '50%' }"
     >
-      <van-cell title="产品名称"/>
-      <van-cell title="选择产品"/>
+      <van-cell :title="productUniqueName"/>
+      <van-cell title="选择产品" @click="chooseProduct"/>
       <div class="fixBottom">
         <van-cell title="用户设置" class="bottomStyle"/>
         <van-cell title="注销" class="bottomStyle" @click="logout"/>
@@ -80,108 +80,90 @@
 </template>
 
 <script>
-import { Popup, Cell, Tabbar, TabbarItem, Icon, Button, Row, Col, Tag } from 'vant'
-import { mapGetters, mapMutations } from 'vuex'
-import { removeToken, removeUsername } from '@/utils/user'
+import { Popup, Cell, Icon, Row, Col } from 'vant'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Home',
   components: {
     [Popup.name]: Popup,
-    [Tabbar.name]: Tabbar,
-    [TabbarItem.name]: TabbarItem,
     [Cell.name]: Cell,
     [Icon.name]: Icon,
-    [Button.name]: Button,
     [Row.name]: Row,
-    [Col.name]: Col,
-    [Tag.name]: Tag
+    [Col.name]: Col
   },
   data () {
     return {
-      active: 0,
-      show: false,
+      showPopup: false,
       deviceNum: 0,
       onNum: 0,
-      offNum: 0,
-      productName: ''
+      offNum: 0
     }
   },
   computed: {
     ...mapGetters([
-      'device',
-      'product'
+      'deviceStats',
+      'productName',
+      'productUniqueName'
     ])
   },
   mounted () {
     this.getDeviceNum()
-    this.getProductInfo()
   },
   methods: {
-    ...mapMutations({
-      SET_TOKEN: 'user/SET_TOKEN'
+    ...mapActions({
+      clearLoginInfo: 'user/clearLoginInfo',
+      getDeviceStats: 'device/getDeviceStats'
     }),
-    showPopup () {
-      this.show = true
-    },
-    logout () {
-      removeToken()
-      removeUsername()
-      this.SET_TOKEN('')
-      this.$router.push({name: 'Login'})
+    chooseProduct () {
+      ;
     },
     getDeviceNum () {
-      this.$store.dispatch('home/getDevice').then(() => {
-        console.log(this.device)
-        this.device.forEach(item => {
-          if (item.num !== 3) {
-            this.deviceNum += item.num
-          }
-          if (item.status === 1) {
-            this.onNum += item.num
-          }
-          if (item.status === 2) {
-            this.offNum += item.num
+      this.getDeviceStats().then(() => {
+        this.deviceStats.forEach(item => {
+          switch (item.status) {
+            case 1:
+              this.onNum += item.num
+              this.deviceNum += item.num
+              break
+            case 2:
+              this.offNum += item.num
+              this.deviceNum += item.num
+              break
           }
         })
       })
     },
     goDevice (status) {
-      this.$router.push({name: 'Device', query: {status: status}})
+      let deviceStatus = ''
+      deviceStatus = status === 'on' ? 1 : deviceStatus = status === 'off' ? 2 : ''
+
+      this.$store.commit('device/SET_DEVICE_STATUS', deviceStatus)
+      this.$router.push({name: 'Device'})
     },
-    getProductInfo () {
-      this.$store.dispatch('home/getProduct').then(() => {
-        this.productName = this.product
-      })
+    logout () {
+      this.clearLoginInfo()
+      this.$router.push({name: 'Login'})
     }
   }
 }
 </script>
 
 <style scoped>
-  .setBorder {
-    border: 1px solid gray
-  }
+.firstCell{
+  width:20%;
+  margin-left:80%;
+}
 
-  .firstCell{
-    width:20%;
-    margin-left:80%;
-  }
+.fixBottom{
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+}
 
-  .downCell{
-    position:absolute;
-    padding-bottom:10%;
-  }
-
-  .fixBottom{
-    width: 100%;
-    position: fixed;
-    bottom: 0;
-  }
-
-  .bottomStyle{
-    width: 100%;
-    height:50px;
-  }
+.bottomStyle{
+  width: 100%;
+  height:50px;
+}
 
 .firstCell{
   width:20%;
@@ -200,40 +182,34 @@ export default {
   margin-top: 20%;
   height: 50px
 }
-.tag{
-  font-size: 18px;
-  height: 60px;
-  line-height: 60px;
-  width: 70%
-}
+
 .circle-online {
   width: 12px;
   height: 12px;
   background-color:#0fc18b;
   border-radius: 6px;
 }
+
 .circle-offline {
   width: 12px;
   height: 12px;
   background-color: grey;
   border-radius: 6px;
 }
+
 .sumCol{
   text-align: center;
   height: 100%;
   width: 20;
 }
-.stats-title {
-  font-size: 14px;
-  color: gray
-}
+
 .stats-num {
   font-size: 30px;
 }
+
 .v-bar-right {
     width: 30px;
     height: 40px;
     border-left: solid #ebecec 1px;
 }
-
 </style>

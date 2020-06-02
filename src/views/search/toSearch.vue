@@ -5,7 +5,6 @@
           left-text="返回"
           left-arrow
           @click-left="onClickLeft"
-          @click-right="onClickRight"
         />
       <div style="height:2000px">
         <van-cell class="cellDivision" title='设备'></van-cell>
@@ -244,8 +243,6 @@ export default {
     onClickLeft () {
       if (!this.searchResult) return
       this.$router.push({name: 'Search'})
-    },
-    onClickRight () {
     },
     removeDevice () {
       this.device = ''

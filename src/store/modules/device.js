@@ -1,38 +1,60 @@
-import { getDeviceList, getDeviceDetail } from '@/api/device'
+import Device from '@/api/device'
 
 const state = {
+  currentDevice: '',
+  deviceStatus: '',
+  deviceStats: [],
   deviceList: [],
-  deviceDetail: []
+  deviceInfo: []
 }
 
 const mutations = {
+  SET_CURRENT_DEVICE: (state, currentDevice) => {
+    state.currentDevice = currentDevice
+  },
+  SET_DEVICE_STATUS: (state, deviceStatus) => {
+    state.deviceStatus = deviceStatus
+  },
+  SET_DEVICE_STATS: (state, deviceStats) => {
+    state.deviceStats = deviceStats
+  },
   SET_DEVICE_LIST: (state, deviceList) => {
     state.deviceList = deviceList
   },
-  SET_DEVICE_DETAIL: (state, deviceDetail) => {
-    state.deviceDetail = deviceDetail
+  SET_DEVICE_INFO: (state, deviceInfo) => {
+    state.deviceInfo = deviceInfo
   }
 }
 
 const actions = {
-  getDeviceDetail ({ commit }, query) {
+  getDeviceStats ({ rootGetters, commit }) {
     return new Promise((resolve, reject) => {
-      getDeviceDetail(query).then(response => {
-        console.log(response)
-        commit('SET_DEVICE_DETAIL', response)
+      Device.getDeviceStats(rootGetters.customerRoleId, rootGetters.productId).then(res => {
+        commit('SET_DEVICE_STATS', res.device)
         resolve()
-      }).catch(error => {
-        reject(error)
+      }).catch(err => {
+        reject(err)
       })
     })
   },
-  getDeviceList ({ commit }) {
+  getDeviceInfo ({ rootGetters, commit }) {
     return new Promise((resolve, reject) => {
-      getDeviceList().then(response => {
-        commit('SET_DEVICE_LIST', response)
+      Device.getDeviceInfo(rootGetters.customerRoleId, rootGetters.deviceId, rootGetters.productId).then(res => {
+        commit('SET_DEVICE_INFO', res)
         resolve()
-      }).catch(error => {
-        reject(error)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  getDeviceList ({ rootGetters, commit }) {
+    return new Promise((resolve, reject) => {
+      Device.getDeviceList(rootGetters.customerRoleId, rootGetters.productId).then(res => {
+        console.log(res)
+        commit('SET_DEVICE_LIST', res)
+        resolve()
+      }).catch(err => {
+        reject(err)
       })
     })
   }

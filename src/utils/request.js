@@ -1,9 +1,10 @@
 import axios from 'axios'
-import { getToken } from '@/utils/user'
+import Cookie from '@/utils/cookie'
+import Router from '@/router'
 import { Notify } from 'vant'
 // create an axios instance
 const service = axios.create({
-  baseURL: 'https://api.qiaolian.co/api/v1.dev', // 后端url，自行修改
+  baseURL: process.env.BASE_API,
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
@@ -11,7 +12,7 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    config.headers['Authorization'] = getToken()
+    config.headers['Authorization'] = Cookie.getToken()
     return config
   },
   error => {
@@ -50,8 +51,8 @@ service.interceptors.response.use(
         break
 
       case 401:
-        Notify({type: 'warning', message: '账号或密码错误'})
-        this.$router.replace('/')
+        Notify({type: 'warning', message: '账号信息错误'})
+        Router.push({name: 'Login'})
         break
 
       case 429:

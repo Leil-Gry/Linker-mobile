@@ -39,6 +39,12 @@
 import { Field, Button, CellGroup, Notify } from 'vant'
 export default {
   name: 'Login',
+  components: {
+    [Field.name]: Field,
+    [Button.name]: Button,
+    [CellGroup.name]: CellGroup,
+    [Notify.name]: Notify
+  },
   data () {
     return {
       loginForm: {
@@ -53,19 +59,13 @@ export default {
       closeEye: 'closed-eye'
     }
   },
-  components: {
-    [Field.name]: Field,
-    [Button.name]: Button,
-    [CellGroup.name]: CellGroup,
-    [Notify.name]: Notify
-  },
   methods: {
     login () {
-      this.$store.dispatch('user/login', this.loginForm)
-        .then((res) => {
+      this.$store.dispatch('user/loginAndSaveInfo', this.loginForm)
+        .then(res => {
           this.$router.push({name: 'Linker'})
         })
-        .catch((err) => {
+        .catch(err => {
           this.captcha = ''
           if (err.response.status === 401) {
             this.captchaImg = 'data:image/png;base64,' + err.response.data

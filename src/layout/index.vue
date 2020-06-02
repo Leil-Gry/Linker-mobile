@@ -1,19 +1,16 @@
 <template>
   <div>
     <router-view></router-view>
-    <navbar/>
+    <tabbar/>
   </div>
 </template>
 
 <script>
-import Navbar from './Navbar'
+import Tabbar from './Tabbar'
 export default {
-  name: 'index',
+  name: 'Layout',
   components: {
-    Navbar
+    Tabbar
   }
 }
 </script>
-
-<style scoped>
-</style>

@@ -1,30 +1,37 @@
 import request from '@/utils/request'
 
-export function getTags () {
-  return request({
-    method: 'get',
-    url: '/product/5c39ee9611b780012c8c30aa/tags?size=20'
-  })
-}
+export default{
+  /**
+   * 获取标签
+   */
+  getTags (pid, size = 20) {
+    return request({
+      method: 'get',
+      url: '/product/' + pid + '/tags?size=' + size
+    })
+  },
+  /**
+   * 获取标签值
+   */
+  getTagValues (pid, tag) {
+    return request({
+      method: 'get',
+      url: '/product/' + pid + '/tag/' + tag + '/values?size=20'
+    })
+  },
 
-export function getTagValues (data) {
-  return request({
-    method: 'get',
-    url: '/product/5c39ee9611b780012c8c30aa/tag/' + data + '/values?size=20'
-  })
-}
+  getVariable (pid) {
+    return request({
+      method: 'get',
+      url: '/product/' + pid
+    })
+  },
 
-export function getVariable () {
-  return request({
-    method: 'get',
-    url: '/product/5c39ee9611b780012c8c30aa'
-  })
-}
-
-export function search (data) {
-  return request({
-    method: 'post',
-    url: '/product/5c39ee9611b780012c8c30aa/query?customerId=5c9c9907267cd71fff956329',
-    data: data
-  })
+  search (pid, cid, query) {
+    return request({
+      method: 'post',
+      url: '/product/' + pid + '/query?customerId=' + cid,
+      data: query
+    })
+  }
 }

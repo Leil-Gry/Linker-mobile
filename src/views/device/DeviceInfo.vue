@@ -1,43 +1,42 @@
 <template>
   <div>
     <van-nav-bar
-      :title="deviceName"
+      :title="currentDevice.name"
       left-text="返回"
       left-arrow
       @click-left="onClickLeft"
-      @click-right="onClickRight"
     />
     <div class="rolStyle">
       <span class="left">描述</span>
-      <span class="right">{{deviceInfo.description}}</span>
+      <span class="right">{{currentDevice.description}}</span>
     </div>
     <van-divider style="margin: 0"/>
     <div class="rolStyle">
       <span class="left">状态</span>
       <span class="right">
-        <van-tag size="medium" :type="getStatusTagType(deviceInfo.status)">{{getStatus(deviceInfo.status)}}</van-tag>
+        <van-tag size="medium" :type="getStatusTagType(currentDevice.status)">{{getStatus(currentDevice.status)}}</van-tag>
       </span>
     </div>
     <van-divider style="margin: 0"/>
     <div class="rolStyle">
       <span class="left">deviceKey</span>
-      <span class="right">{{deviceInfo.deviceKey}}</span>
+      <span class="right">{{currentDevice.deviceKey}}</span>
     </div>
     <van-divider style="margin: 0"/>
     <div class="rolStyle">
       <span class="left">激活时间</span>
-      <span class="right">{{deviceInfo.activatedAt | localTime}}</span>
+      <span class="right">{{currentDevice.activatedAt | localTime}}</span>
     </div>
     <van-divider style="margin: 0"/>
     <div class="rolStyle">
       <span class="left">采样周期</span>
-      <span class="right">{{deviceInfo.period}}</span>
+      <span class="right">{{currentDevice.period}}</span>
     </div>
     <van-divider style="margin: 0"/>
     <div class="rolStyle">
       <span class="left">标签</span>
       <span class="tags">
-        <van-tag mark type="primary" size="large" v-for="data in tags" :key=data class="tag">{{data}}</van-tag>
+        <van-tag mark type="primary" size="large" v-for="data in currentDevice.tags" :key=data class="tag">{{data}}</van-tag>
       </span>
     </div>
   </div>
@@ -47,7 +46,7 @@
 import { NavBar, List, Cell, Panel, Divider, Icon, Tag } from 'vant'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'DetailBody',
+  name: 'DeviceInfo',
   components: {
     [NavBar.name]: NavBar,
     [List.name]: List,
@@ -57,36 +56,21 @@ export default {
     [Tag.name]: Tag,
     [Icon.name]: Icon
   },
-  data () {
-    return {
-      deviceId: JSON.parse(sessionStorage.getItem('chooseDeviceInfo')).id,
-      deviceInfo: '',
-      tags: [],
-      status: false,
-      deviceName: ''
-    }
-  },
   computed: {
     ...mapGetters([
-      'deviceDetail'
+      'currentDevice',
+      'deviceInfo'
     ])
   },
   mounted () {
     this.getDevice()
-    let info = JSON.parse(sessionStorage.getItem('chooseDeviceInfo'))
-    this.deviceName = info.name
   },
   methods: {
     onClickLeft () {
-      this.$router.replace({path: '/device', query: {status: window.location.hash.split('=')[1]}})
-    },
-    onClickRight () {
+      this.$router.go(-1)
     },
     getDevice () {
-      this.$store.dispatch('device/getDeviceDetail', this.deviceId).then(() => {
-        this.deviceInfo = this.deviceDetail
-        this.tags = this.deviceDetail.tags
-      })
+      this.$store.dispatch('device/getDeviceInfo')
     },
     getStatus (status) {
       switch (status) {

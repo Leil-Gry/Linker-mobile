@@ -31,9 +31,9 @@ export default new Router({
           component: () => import('@/views/search/toSearch')
         },
         {
-          path: '/deviceDetail',
-          name: 'DeviceDetail',
-          component: () => import('@/views/device/detail')
+          path: '/deviceInfo',
+          name: 'DeviceInfo',
+          component: () => import('@/views/device/DeviceInfo')
         },
         {
           path: '/device',
@@ -43,7 +43,7 @@ export default new Router({
         {
           path: '/chooseDevice',
           name: 'ChooseDevice',
-          component: () => import('@/views/device/list')
+          component: () => import('@/views/device/DeviceList')
         },
         {
           path: '/warn',
@@ -53,7 +53,7 @@ export default new Router({
         {
           path: '/warnList',
           name: 'WarnList',
-          component: () => import('@/views/warn/list')
+          component: () => import('@/views/warn/WarnList')
         }
       ]
     }

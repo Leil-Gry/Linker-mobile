@@ -3,7 +3,7 @@
     <van-tabbar v-model="active">
       <van-tabbar-item icon="home-o" to="home">首页</van-tabbar-item>
       <van-tabbar-item icon="search" @click="goSearch">搜索</van-tabbar-item>
-      <van-tabbar-item icon="warn-o" :info="warnNum" to="/warn">告警</van-tabbar-item>
+      <van-tabbar-item icon="warn-o" :info="warnNum" to="warn">告警</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
@@ -12,7 +12,7 @@
 import { Tabbar, TabbarItem, Icon } from 'vant'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'Bottom',
+  name: 'Tabbar',
   components: {
     [Tabbar.name]: Tabbar,
     [TabbarItem.name]: TabbarItem,
@@ -20,7 +20,7 @@ export default {
   },
   data () {
     return {
-      active: ''
+      active: 0
     }
   },
   computed: {
@@ -31,6 +31,7 @@ export default {
   },
   mounted () {
     this.getWarnNum()
+    setInterval(this.getWarnNum, 30000)
   },
   methods: {
     goSearch () {
@@ -39,15 +40,9 @@ export default {
         this.$router.push({name: 'Search'})
       } else this.$router.push({name: 'ToSearch'})
     },
-    goWarn () {
-      this.$router.push({name: 'Warn'})
-    },
     getWarnNum () {
       this.$store.dispatch('warn/getWarnNum')
     }
   }
 }
 </script>
-
-<style scoped>
-</style>
