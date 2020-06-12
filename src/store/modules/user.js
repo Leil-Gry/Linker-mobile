@@ -1,8 +1,9 @@
-import User from '@/api/user'
+import { login, getUserInfo } from '@/api/user'
 import Cookie from '@/utils/cookie'
 
 const state = {
   customerRoleId: '',
+  organizationId: '',
   fullName: '',
   token: '',
   email: ''
@@ -17,8 +18,8 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_USERNAME: (state, email) => {
-    state.username = email
+  SET_EMAIL: (state, email) => {
+    state.email = email
   },
   REMOVE_ALL: (state) => {
     Object.keys(state).forEach(key => {
@@ -31,9 +32,9 @@ const mutations = {
 const actions = {
   async login ({ commit }, loginForm) {
     return new Promise((resolve, reject) => {
-      User.login(loginForm).then(res => {
+      login(loginForm).then(res => {
         commit('SET_TOKEN', 'Bearer '.concat(res.token))
-        commit('SET_USERNAME', loginForm.email)
+        commit('SET_EMAIL', loginForm.email)
         Cookie.setUsername(loginForm.email)
         Cookie.setToken('Bearer '.concat(res.token))
         resolve()
@@ -44,7 +45,7 @@ const actions = {
   },
   async getUserInfo ({ commit }) {
     return new Promise((resolve, reject) => {
-      User.getUserInfo().then(res => {
+      getUserInfo().then(res => {
         commit('SET_USER_INFO', {
           customerRoleId: res.roles[0].identity,
           fullName: res.fullName

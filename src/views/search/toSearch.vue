@@ -5,8 +5,8 @@
           left-text="返回"
           left-arrow
           @click-left="onClickLeft"
-        />
-      <div style="height:2000px">
+      />
+      <div>
         <van-cell class="cellDivision" title='设备'></van-cell>
         <van-cell v-if=!device class="cellText" title="暂未选择任何设备，点击选择" @click="goDevice" align="left">
           <van-icon
@@ -76,7 +76,7 @@
         <van-cell class="cellDivision" title='标签'></van-cell>
         <van-row v-for="data in tagsArray" :key="data.index" type='flex' align="center" justify="center">
           <van-col span='21'>
-          <van-cell class="cellText" :title="data.tag" :label="data.value"></van-cell>
+            <van-cell class="cellText" :title="data.tag" :label="data.value"></van-cell>
           </van-col>
           <van-col span='3'>
             <van-icon
@@ -217,9 +217,12 @@ export default {
       tagValues: 'tagValues',
       specification: 'specification',
       searchResult: 'searchResult',
-      device: 'choosedDevice',
       searchMemory: 'searchMemory'
-    })
+    }),
+    device: {
+      get () { return this.$store.getters.choosedDevice },
+      set (value) { this.SET_CHOOSED_DEVICE(value) }
+    }
   },
   mounted () {
     this.getTags()
@@ -241,7 +244,7 @@ export default {
       SET_SEARCH_MEMORY: 'search/SET_SEARCH_MEMORY'
     }),
     onClickLeft () {
-      if (!this.searchResult) return
+      if (!this.searchResult) { return }
       this.$router.push({name: 'Search'})
     },
     removeDevice () {
@@ -311,7 +314,7 @@ export default {
           }
         })
         this.tagsColumns[0].values = tagList
-        this.$store.dispatch('search/getTagValues', this.tagsColumns[0].values[0]).then((response) => {
+        this.$store.dispatch('search/getTagValues', tagList[0]).then(res => {
           this.tagsColumns[1].values = this.tagValues
         })
       })
@@ -325,13 +328,12 @@ export default {
     },
     onTagsChange (picker, values, index) {
       if (index === 0) {
-        this.$store.dispatch('search/getTagValues', this.tagsColumns[0].values[0]).then(() => {
+        this.$store.dispatch('search/getTagValues', values[0]).then(() => {
           picker.setColumnValues(1, this.tagValues)
         })
       }
     },
     onTagsConfirm (tags) {
-      console.log(tags)
       let flag = false
       for (let index = 0; index < this.tagsArray.length; index++) {
         if (this.tagsArray[index].tag === tags[0]) {
@@ -354,6 +356,10 @@ export default {
       for (let index = 0; index < this.tagsArray.length; index++) {
         if (this.tagsArray[index].tag === tag) {
           this.tagsArray.splice(index, 1)
+          this.tagsColumns[0].values.push(tag)
+          this.$store.dispatch('search/getTagValues', tag).then(() => {
+            this.tagsColumns[1].value = this.tagValues
+          })
           break
         }
       }
@@ -428,7 +434,6 @@ export default {
     },
 
     submit () {
-      console.log(this.device, this.startTime)
       if (!this.device) {
         Notify({type: 'warning', message: '设备不可为空'})
         return false
@@ -457,7 +462,7 @@ export default {
       }
       this.$store.dispatch('search/search', this.searchKey)
         .then(() => {
-          console.log(this.searchResult)
+          // console.log(this.searchResult)
           if (this.searchResult.length > 0) {
             this.$router.push({name: 'Search'})
           } else {

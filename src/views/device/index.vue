@@ -64,7 +64,6 @@ export default {
       // 异步更新数据
       setTimeout(() => {
         this.getDeviceList().then(() => {
-          console.log(this.deviceList)
           let data = this.deviceList
           if (!this.deviceStatus) {
             this.list = data

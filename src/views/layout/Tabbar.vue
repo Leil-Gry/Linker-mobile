@@ -1,9 +1,9 @@
 <template>
   <div>
-    <van-tabbar v-model="active">
-      <van-tabbar-item icon="home-o" to="home">首页</van-tabbar-item>
-      <van-tabbar-item icon="search" @click="goSearch">搜索</van-tabbar-item>
-      <van-tabbar-item icon="warn-o" :info="warnNum" to="warn">告警</van-tabbar-item>
+    <van-tabbar v-model="tabbarActive">
+      <van-tabbar-item name='Home' icon="home-o" to="home">首页</van-tabbar-item>
+      <van-tabbar-item name='Search' icon="search" @click="goSearch">搜索</van-tabbar-item>
+      <van-tabbar-item name='Warn' icon="warn-o" :info="warnNum" to="warn">告警</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
@@ -18,16 +18,15 @@ export default {
     [TabbarItem.name]: TabbarItem,
     [Icon.name]: Icon
   },
-  data () {
-    return {
-      active: 0
-    }
-  },
   computed: {
     ...mapGetters([
       'warnNum',
       'searchResult'
-    ])
+    ]),
+    tabbarActive: {
+      get () { return this.$store.getters.tabbarActive },
+      set (value) { this.$store.commit('flags/SET_TABBAR_ACTIVE', value) }
+    }
   },
   mounted () {
     this.getWarnNum()
@@ -35,10 +34,7 @@ export default {
   },
   methods: {
     goSearch () {
-      if (this.searchResult.length > 0) {
-        console.log(this.searchResult)
-        this.$router.push({name: 'Search'})
-      } else this.$router.push({name: 'ToSearch'})
+      this.$router.push({name: this.searchResult.length > 0 ? 'Search' : 'ToSearch'})
     },
     getWarnNum () {
       this.$store.dispatch('warn/getWarnNum')

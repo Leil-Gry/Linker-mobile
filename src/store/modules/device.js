@@ -1,4 +1,4 @@
-import Device from '@/api/device'
+import { getDeviceStats, getDeviceInfo, getDeviceList } from '@/api/device'
 
 const state = {
   currentDevice: '',
@@ -29,7 +29,7 @@ const mutations = {
 const actions = {
   getDeviceStats ({ rootGetters, commit }) {
     return new Promise((resolve, reject) => {
-      Device.getDeviceStats(rootGetters.customerRoleId, rootGetters.productId).then(res => {
+      getDeviceStats(rootGetters.customerRoleId, rootGetters.productId).then(res => {
         commit('SET_DEVICE_STATS', res.device)
         resolve()
       }).catch(err => {
@@ -39,7 +39,7 @@ const actions = {
   },
   getDeviceInfo ({ rootGetters, commit }) {
     return new Promise((resolve, reject) => {
-      Device.getDeviceInfo(rootGetters.customerRoleId, rootGetters.deviceId, rootGetters.productId).then(res => {
+      getDeviceInfo(rootGetters.customerRoleId, rootGetters.deviceId, rootGetters.productId).then(res => {
         commit('SET_DEVICE_INFO', res)
         resolve()
       }).catch(err => {
@@ -49,7 +49,7 @@ const actions = {
   },
   getDeviceList ({ rootGetters, commit }) {
     return new Promise((resolve, reject) => {
-      Device.getDeviceList(rootGetters.customerRoleId, rootGetters.productId).then(res => {
+      getDeviceList(rootGetters.customerRoleId, rootGetters.productId).then(res => {
         console.log(res)
         commit('SET_DEVICE_LIST', res)
         resolve()

@@ -16,9 +16,9 @@
       :style="{ height: '100%',width: '50%' }"
     >
       <van-cell :title="productUniqueName"/>
-      <van-cell title="选择产品" @click="chooseProduct"/>
+      <van-cell title="选择产品" @click="goProduct"/>
       <div class="fixBottom">
-        <van-cell title="用户设置" class="bottomStyle"/>
+        <van-cell title="用户设置" class="bottomStyle" @click="goUserSetting"/>
         <van-cell title="注销" class="bottomStyle" @click="logout"/>
       </div>
     </van-popup>
@@ -114,8 +114,8 @@ export default {
       clearLoginInfo: 'user/clearLoginInfo',
       getDeviceStats: 'device/getDeviceStats'
     }),
-    chooseProduct () {
-      ;
+    goProduct () {
+      this.$router.push({name: 'Product'})
     },
     getDeviceNum () {
       this.getDeviceStats().then(() => {
@@ -139,6 +139,9 @@ export default {
 
       this.$store.commit('device/SET_DEVICE_STATUS', deviceStatus)
       this.$router.push({name: 'Device'})
+    },
+    goUserSetting () {
+      this.$router.push({name: 'UserSetting'})
     },
     logout () {
       this.clearLoginInfo()

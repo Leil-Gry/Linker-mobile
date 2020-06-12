@@ -12,13 +12,18 @@ export default new Router({
     {
       path: '/linker',
       name: 'Linker',
-      component: () => import('@/layout/index'),
+      component: () => import('@/views/layout'),
       redirect: {name: 'Home'},
       children: [
         {
           path: '/home',
           name: 'Home',
           component: () => import('@/views/home')
+        },
+        {
+          path: '/setting',
+          name: 'UserSetting',
+          component: () => import('@/views/home/UserSetting')
         },
         {
           path: '/search',
@@ -28,7 +33,12 @@ export default new Router({
         {
           path: '/toSearch',
           name: 'ToSearch',
-          component: () => import('@/views/search/toSearch')
+          component: () => import('@/views/search/ToSearch')
+        },
+        {
+          path: '/product',
+          name: 'Product',
+          component: () => import('@/views/product')
         },
         {
           path: '/deviceInfo',
